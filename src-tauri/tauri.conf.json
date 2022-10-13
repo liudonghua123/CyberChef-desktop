@@ -1,19 +1,25 @@
 {
+  "$schema": "../node_modules/@tauri-apps/cli/schema.json",
+  "build": {
+    "devPath": "../dist",
+    "distDir": "../dist"
+  },
   "package": {
-    "productName": "CyberChef",
+    "productName": "cyberchef-app",
     "version": "9.46.5"
   },
-  "build": {
-    "distDir": "../dist",
-    "devPath": "http://localhost:5000",
-    "beforeDevCommand": "",
-    "beforeBuildCommand": ""
-  },
   "tauri": {
+    "allowlist": {
+      "all": true
+    },
     "bundle": {
       "active": true,
-      "targets": "all",
-      "identifier": "com.cyberchef",
+      "category": "DeveloperTool",
+      "copyright": "",
+      "deb": {
+        "depends": []
+      },
+      "externalBin": [],
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -21,45 +27,38 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "resources": [],
-      "externalBin": [],
-      "copyright": "",
-      "category": "DeveloperTool",
-      "shortDescription": "",
+      "identifier": "com.cyberchef",
       "longDescription": "",
-      "deb": {
-        "depends": []
-      },
       "macOS": {
-        "frameworks": [],
-        "minimumSystemVersion": "",
+        "entitlements": null,
         "exceptionDomain": "",
-        "signingIdentity": null,
-        "entitlements": null
+        "frameworks": [],
+        "providerShortName": null,
+        "signingIdentity": null
       },
+      "resources": [],
+      "shortDescription": "",
+      "targets": "all",
       "windows": {
         "certificateThumbprint": null,
         "digestAlgorithm": "sha256",
         "timestampUrl": ""
       }
     },
+    "security": {
+      "csp": null
+    },
     "updater": {
       "active": false
     },
-    "allowlist": {
-      "all": true
-    },
     "windows": [
       {
-        "title": "CyberChef",
-        "width": 800,
+        "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "fullscreen": false
+        "title": "cyberchef-app",
+        "width": 800
       }
-    ],
-    "security": {
-      "csp": "default-src blob: data: filesystem: ws: wss: http: https: tauri: 'unsafe-eval' 'unsafe-inline' 'self' img-src: 'self'"
-    }
+    ]
   }
 }

@@ -4,17 +4,35 @@ on:
     tags:
       - "*"
     branches:
-      - 'main'
-      - 'master'
+      - main
+      - master
 
 jobs:
   publish-tauri:
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-latest, windows-latest]
+        include:
+          - os: ubuntu-22.04
+            label: linux
+            target: x86_64-unknown-linux-gnu
+          - os: ubuntu-22.04
+            label: linux
+            target: i686-unknown-linux-gnu
+          - os: macos-latest
+            label: macos
+            target: x86_64-apple-darwin
+          - os: macos-latest
+            label: macos
+            target: aarch64-apple-darwin
+          - os: windows-latest
+            label: windows
+            target: i686-pc-windows-msvc
+          - os: windows-latest
+            label: windows
+            target: x86_64-pc-windows-msvc
 
-    runs-on: ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
     - name: setup node
@@ -25,13 +43,51 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
-    - name: install webkit2gtk (ubuntu only)
-      if: matrix.platform == 'ubuntu-latest'
+    - name: setup for linux
+      if: matrix.os == 'ubuntu-22.04'
       run: |
-        sudo apt-get update
-        sudo apt-get install -y webkit2gtk-4.0
+        sudo dpkg --add-architecture i386
+        sudo apt update
+        sudo add-apt-repository universe
+        sudo dpkg --add-architecture i386 
+        sudo apt update
+        sudo apt upgrade
+        sudo apt install -y \
+          libwebkit2gtk-4.0-dev \
+          libwebkit2gtk-4.0-dev:i386 \
+          build-essential \
+          curl \
+          wget \
+          libssl-dev \
+          libssl-dev:i386 \
+          libgtk-3-dev \
+          libgtk-3-dev:i386 \
+          patchelf \
+          librsvg2-dev \
+          librsvg2-dev:i386 \
+          libayatana-appindicator3-dev \
+          gcc-multilib \
+          g++-multilib \
+          libdbus-1-dev \
+          libdbus-1-dev:i386
     - name: Download cyber-chef
       run: bash ./scripts/build.sh
+    - name: rustup add target
+      run: |
+        rustup target add ${{ matrix.target }}
+      shell: bash
+        
+    - name: Patch for Linux 32-bit env
+      if: matrix.os == 'ubuntu-22.04' && matrix.target == 'i686-unknown-linux-gnu'
+      run: |
+        echo "PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig:$PKG_CONFIG_PATH" >> $GITHUB_ENV
+        echo "PKG_CONFIG_SYSROOT_DIR=/" >> $GITHUB_ENV
+        export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
+        export PKG_CONFIG_SYSROOT_DIR=/
+        ls -l $GITHUB_ENV
+        cat $GITHUB_ENV
+        ls -l /usr/lib/pkgconfig /usr/share/pkgconfig /usr/lib/i386-linux-gnu/pkgconfig /usr/lib/x86_64-linux-gnu/pkgconfig
+      shell: bash
     - uses: liudonghua123/tauri-action@v0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,3 +98,5 @@ jobs:
         releaseDraft: false
         prerelease: false
         bundleIdentifier: app.cyberchef
+        args: -t ${{ matrix.target }}
+        target: ${{ matrix.target }}
