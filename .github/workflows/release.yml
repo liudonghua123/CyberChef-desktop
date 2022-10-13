@@ -67,9 +67,7 @@ jobs:
           librsvg2-dev:i386 \
           libayatana-appindicator3-dev \
           gcc-multilib \
-          g++-multilib \
-          libdbus-1-dev \
-          libdbus-1-dev:i386
+          g++-multilib
     - name: Download cyber-chef
       run: bash ./scripts/build.sh
     - name: rustup add target
