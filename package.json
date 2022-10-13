@@ -1,0 +1,22 @@
+{
+  "name": "cyberchef-desktop",
+  "version": "1.0.0",
+  "description": "Unofficial desktop builds of [CyberChef] using [Tauri].",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "build": "echo \"ok\"",
+    "dev": "echo \"ok\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liudonghua123/CyberChef-desktop.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/liudonghua123/CyberChef-desktop/issues"
+  },
+  "homepage": "https://github.com/liudonghua123/CyberChef-desktop#readme"
+}

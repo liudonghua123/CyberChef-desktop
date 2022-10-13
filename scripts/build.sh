@@ -2,7 +2,9 @@
 
 set -ex
 
-version=$(jq -r .package.version src-tauri/tauri.conf.json)
+# GITHUB_REF_NAME=app-v9.46.5
+# GITHUB_REF_NAME=${GITHUB_REF_NAME#app-v}
+version=${GITHUB_REF_NAME#app-v}
 
 echo "Downloading CyberChef"
 
